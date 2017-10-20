@@ -9,19 +9,19 @@ node { // No specific label
         }
 
         stage('Build') {
-            mvn 'install -DskipTests'
+            sh "mvn 'install -DskipTests'"
             archive '**/target/*.jar'
         }
 
         parallel(
             test: {
                 stage('Test') {
-                    mvn 'surefire:test'
+                    sh"mvn 'surefire:test'"
                 }
             },
             dependencyCheck: {
                 stage('Dependency Check') {
-                    mvn 'org.owasp:dependency-check-maven:check -Ddependency-check-format=XML'
+                    sh"mvn 'org.owasp:dependency-check-maven:check -Ddependency-check-format=XML'"
                     step([$class: 'DependencyCheckPublisher', unstableTotalAll: '0'])
                 }
             }
